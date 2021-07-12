@@ -25,11 +25,14 @@ import com.bezkoder.springjwt.security.services.UserDetailsServiceImpl;
 		// jsr250Enabled = true,
 		prePostEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
-	@Autowired
-	UserDetailsServiceImpl userDetailsService;
+	final UserDetailsServiceImpl userDetailsService;
 
-	@Autowired
-	private AuthEntryPointJwt unauthorizedHandler;
+	final AuthEntryPointJwt unauthorizedHandler;
+
+	public WebSecurityConfig(UserDetailsServiceImpl userDetailsService, AuthEntryPointJwt unauthorizedHandler) {
+		this.userDetailsService = userDetailsService;
+		this.unauthorizedHandler = unauthorizedHandler;
+	}
 
 	@Bean
 	public AuthTokenFilter authenticationJwtTokenFilter() {
@@ -38,6 +41,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Override
 	public void configure(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
+		authenticationManagerBuilder.inMemoryAuthentication().withUser("admin1")
+	    .password(passwordEncoder().encode("admin123")).authorities("ADMIN");
 		authenticationManagerBuilder.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
 	}
 
@@ -52,6 +57,21 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		return new BCryptPasswordEncoder();
 	}
 
+	private static final String[] AUTH_WHITELIST = {
+			// -- Swagger UI v2
+			"/v2/api-docs",
+			"/swagger-resources",
+			"/swagger-resources/**",
+			"/configuration/ui",
+			"/configuration/security",
+			"/swagger-ui.html",
+			"/webjars/**",
+			// -- Swagger UI v3 (OpenAPI)
+			"/v3/api-docs/**",
+			"/swagger-ui/**"
+			// other public endpoints of your API may be appended to this array
+	};
+
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http.cors().and().csrf().disable()
@@ -59,6 +79,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 			.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
 			.authorizeRequests().antMatchers("/api/auth/**").permitAll()
 			.antMatchers("/api/test/**").permitAll()
+			.antMatchers(AUTH_WHITELIST).permitAll()
 			.anyRequest().authenticated();
 
 		http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);

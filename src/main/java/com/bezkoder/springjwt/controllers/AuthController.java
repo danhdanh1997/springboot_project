@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -34,22 +35,26 @@ import com.bezkoder.springjwt.security.services.UserDetailsImpl;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
+@SecurityRequirement(name = "xuandanhapi")
 @RequestMapping("/api/auth")
 public class AuthController {
-	@Autowired
-	AuthenticationManager authenticationManager;
+	final AuthenticationManager authenticationManager;
 
-	@Autowired
-	UserRepository userRepository;
+	final UserRepository userRepository;
 
-	@Autowired
-	RoleRepository roleRepository;
+	final RoleRepository roleRepository;
 
-	@Autowired
-	PasswordEncoder encoder;
+	final PasswordEncoder encoder;
 
-	@Autowired
-	JwtUtils jwtUtils;
+	final JwtUtils jwtUtils;
+
+	public AuthController(AuthenticationManager authenticationManager, UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder encoder, JwtUtils jwtUtils) {
+		this.authenticationManager = authenticationManager;
+		this.userRepository = userRepository;
+		this.roleRepository = roleRepository;
+		this.encoder = encoder;
+		this.jwtUtils = jwtUtils;
+	}
 
 	@PostMapping("/signin")
 	public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {

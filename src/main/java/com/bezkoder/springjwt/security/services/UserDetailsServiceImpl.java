@@ -12,8 +12,11 @@ import com.bezkoder.springjwt.repository.UserRepository;
 
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
-	@Autowired
-	UserRepository userRepository;
+	final UserRepository userRepository;
+
+	public UserDetailsServiceImpl(UserRepository userRepository) {
+		this.userRepository = userRepository;
+	}
 
 	@Override
 	@Transactional
