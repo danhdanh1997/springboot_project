@@ -36,6 +36,9 @@ public class Staff  {
     @Column(name = "phone")
     private String phone;
 
+    @Column(name = "image")
+    private String image;
+
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "start_work_day")
     private Date startWorkDay;
@@ -58,7 +61,7 @@ public class Staff  {
     public Staff() {
     }
 
-    public Staff(String id, String firstName, String lastName, Date dateOfBirth, String gender, String address, String phone, Date startWorkDay, Set<Role> roles) {
+    public Staff(String id, String firstName, String lastName, Date dateOfBirth, String gender, String address, String phone, Date startWorkDay,String image, Set<Role> roles) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -67,6 +70,7 @@ public class Staff  {
         this.address = address;
         this.phone = phone;
         this.startWorkDay = startWorkDay;
+        this.image = image;
         this.roles = roles;
    }
 
@@ -120,6 +124,13 @@ public class Staff  {
 
     public String getPhone() {
         return phone;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
+    public String getImage() {
+        return image;
     }
 
     public void setPhone(String phone) {
