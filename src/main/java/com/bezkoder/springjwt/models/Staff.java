@@ -35,6 +35,8 @@ public class Staff  {
 
     @Column(name = "phone")
     private String phone;
+    @Column(name = "image")
+    private String image;
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "start_work_day")
@@ -134,6 +136,12 @@ public class Staff  {
         this.startWorkDay = startWorkDay;
     }
 
+    public void setImage(String image) {
+        this.image = image;
+    }
+    public String getImage() {
+        return image;
+    }
     public Set<Role> getRoles() {
         return roles;
     }
